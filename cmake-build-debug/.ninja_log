@@ -1,0 +1,7 @@
+# ninja log v5
+2	198	6705186484569302	build.ninja	eda35b0da8c8a55c
+0	13	0	clean	85650328b38a24bf
+1148	1285	6705133048712615	OpenGL_302.exe	301616fbd9cdecd7
+19	784	6705186535686013	CMakeFiles/Chickin.dir/C_/Users/Pocky/CLionProjects/common/GLShader.cpp.obj	eb743456a92482c1
+1	1603	6705186543905677	CMakeFiles/Chickin.dir/main.cpp.obj	73780a674c650438
+1604	1764	6705186545505365	Chickin.exe	d92d6b82e35a6a6e

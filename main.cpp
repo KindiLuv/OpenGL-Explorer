@@ -1,5 +1,6 @@
 //#define GLEW_STATIC 1
 #define TINYOBJLOADER_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
@@ -16,6 +17,7 @@ struct Vertex {
 };
 
 #include "DragonData.h"
+#include "stb_image.h"
 
 
 using std::vector;
@@ -23,16 +25,18 @@ using std::vector;
 GLShader g_triangleShader;
 Vertex coords[50000] = {};
 int cpt = 0;
-
+unsigned int texID;
 void Initialize()
 {
     g_triangleShader.LoadVertexShader("triangle.vs");
     g_triangleShader.LoadFragmentShader("triangle.fs");
     g_triangleShader.Create();
+    glGenTextures(1, &texID);
 }
 
 void Terminate()
 {
+    glDeleteTextures(1, &texID);
     g_triangleShader.Destroy();
 }
 
@@ -48,6 +52,8 @@ void Render(GLFWwindow* window)
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 1.0f, 1.0f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
     float time = glfwGetTime();
 
@@ -67,6 +73,14 @@ void Render(GLFWwindow* window)
     glVertexAttribPointer(loc_color, 3, GL_FLOAT, GL_FALSE,
                           stride, coords->normal);
     glEnableVertexAttribArray(loc_color);
+
+    const auto loc_uv = glGetAttribLocation(program,
+                                            "a_uv");
+    glVertexAttribPointer(loc_uv, 2, GL_FLOAT, GL_FALSE, stride, coords->uv);
+    glEnableVertexAttribArray(loc_uv);
+
+    auto loc_tex = glGetUniformLocation(program, "u_sampler");
+    glUniform1f(loc_tex, 0);
 
     const auto loc_time = glGetUniformLocation(program,
                                                "u_time");
@@ -98,7 +112,6 @@ void Render(GLFWwindow* window)
     const auto loc_proj_mat = glGetUniformLocation(
             program, "u_projectionMatrix");
     glUniformMatrix4fv(loc_proj_mat, 1, GL_FALSE, projectionMatrix);
-
     glDrawArrays(GL_TRIANGLES, 0, cpt);
 
     //const uint16_t indexCount = cpt;
@@ -132,7 +145,28 @@ int main(void)
 
     Initialize();
 
-    std::string inputfile = "C:/Users/Pocky/ClionProjects/OpenGL-Explorer/objects/Triangulate_chickin.obj";
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    int w,h;
+    unsigned char *data = stbi_load("../Sting_Base_Color.png" , &w,&h,nullptr,STBI_rgb_alpha);
+    if(data){
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0,GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    std::string inputfile = "C:/Users/pierr/Documents/GitHub/OpenGL-Explorer/objects/Triangulate_chickin.obj";
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
 

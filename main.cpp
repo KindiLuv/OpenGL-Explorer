@@ -1,10 +1,13 @@
 //#define GLEW_STATIC 1
+#define TINYOBJLOADER_IMPLEMENTATION
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
 
 #include "../common/GLShader.h"
+
+#include "tiny_obj_loader.h"
 
 struct Vertex {
     float position[3];  // x, y, z
@@ -14,7 +17,12 @@ struct Vertex {
 
 #include "DragonData.h"
 
+
+using std::vector;
+
 GLShader g_triangleShader;
+Vertex coords[50000] = {};
+int cpt = 0;
 
 void Initialize()
 {
@@ -50,21 +58,15 @@ void Render(GLFWwindow* window)
     const auto loc_position = glGetAttribLocation(program,
                                                   "a_position");
 
-    const Vertex* mesh = (Vertex*)DragonVertices;
-    const size_t tailleDragonOctet = sizeof(DragonVertices);
-    //const size_t floatCount = _countof(DragonVertices);
-    const uint32_t vertexCount = tailleDragonOctet/sizeof(Vertex);
-
     glVertexAttribPointer(loc_position, 3, GL_FLOAT, GL_FALSE,
-                          stride, mesh->position);
+                          stride, coords->position);
     glEnableVertexAttribArray(loc_position);
 
     const auto loc_color = glGetAttribLocation(program,
                                                   "a_color");
     glVertexAttribPointer(loc_color, 3, GL_FLOAT, GL_FALSE,
-                          stride, mesh->normal);
+                          stride, coords->normal);
     glEnableVertexAttribArray(loc_color);
-    //glVertexAttrib3fv(loc_color, triangle[0].color);
 
     const auto loc_time = glGetUniformLocation(program,
                                                "u_time");
@@ -75,7 +77,7 @@ void Render(GLFWwindow* window)
             cosf(time), 0.0f, sinf(time),  0.0f,
             0.f, 1, 0.0f, 0.0f,
             -sinf(time), 0.0f, cosf(time), 0.0f,
-            0.0f, 0.0f, -40.0f, 1.0f
+            0.0f, 0.0f, -5.0f, 1.0f
     };
 
     const auto loc_rotz_mat = glGetUniformLocation(
@@ -97,10 +99,10 @@ void Render(GLFWwindow* window)
             program, "u_projectionMatrix");
     glUniformMatrix4fv(loc_proj_mat, 1, GL_FALSE, projectionMatrix);
 
-    //glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    glDrawArrays(GL_TRIANGLES, 0, cpt);
 
-    const uint16_t indexCount = sizeof(DragonIndices)/ sizeof(uint16_t);
-    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, DragonIndices);
+    //const uint16_t indexCount = cpt;
+    //glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, DragonIndices);
 }
 
 int main(void)
@@ -130,6 +132,61 @@ int main(void)
 
     Initialize();
 
+    std::string inputfile = "C:/Users/Pocky/ClionProjects/OpenGL-Explorer/objects/Triangulate_chickin.obj";
+    tinyobj::ObjReaderConfig reader_config;
+    reader_config.mtl_search_path = "./"; // Path to material files
+
+    tinyobj::ObjReader reader;
+    reader_config.triangulate = true;
+
+    if (!reader.ParseFromFile(inputfile, reader_config)) {
+        if (!reader.Error().empty()) {
+            std::cerr << "TinyObjReader: " << reader.Error();
+        }
+        exit(1);
+    }
+
+
+    auto& attrib = reader.GetAttrib();
+    //Collect faces
+    auto& shapes = reader.GetShapes();
+    auto& materials = reader.GetMaterials();
+
+
+    for(size_t i = 0; i < shapes.size(); i++) {
+        size_t index_offset = 0;
+        // For each face
+        for (size_t f = 0; f < shapes[i].mesh.num_face_vertices.size(); f++) {
+            for(int k = 0; k < 3; k++){
+
+            tinyobj::index_t idx = shapes[i].mesh.indices[index_offset];
+
+            float vx = attrib.vertices[3*size_t(idx.vertex_index)+0];
+            float vy = attrib.vertices[3*size_t(idx.vertex_index)+1];
+            float vz = attrib.vertices[3*size_t(idx.vertex_index)+2];
+
+
+            float nx = attrib.normals[3*size_t(idx.normal_index)+0];
+            float ny = attrib.normals[3*size_t(idx.normal_index)+1];
+            float nz = attrib.normals[3*size_t(idx.normal_index)+2];
+
+
+            float tx = attrib.texcoords[2*size_t(idx.texcoord_index)+0];
+            float ty = attrib.texcoords[2*size_t(idx.texcoord_index)+1];
+
+
+            coords[cpt]=Vertex{
+                    {vx,vy,vz},
+                    {nx,ny,nz},
+                    {tx,ty}
+            };
+            cpt++;
+            index_offset++;
+            }
+        }
+    }
+
+    std::cout << cpt << std::endl;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {

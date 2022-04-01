@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/Pocky/CLionProjects/Chikin/cmake-build-debug"
+			"value" : "c:/Users/Pocky/CLionProjects/OpenGL-Explorer/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -623,7 +623,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/Pocky/CLionProjects/Chikin"
+			"value" : "C:/Users/Pocky/CLionProjects/OpenGL-Explorer"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1239,7 +1239,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/Pocky/CLionProjects/Chikin/cmake-build-debug"
+			"value" : "C:/Users/Pocky/CLionProjects/OpenGL-Explorer/cmake-build-debug"
 		},
 		{
 			"name" : "Chickin_IS_TOP_LEVEL",
@@ -1263,7 +1263,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/Pocky/CLionProjects/Chikin"
+			"value" : "C:/Users/Pocky/CLionProjects/OpenGL-Explorer"
 		},
 		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenGL",

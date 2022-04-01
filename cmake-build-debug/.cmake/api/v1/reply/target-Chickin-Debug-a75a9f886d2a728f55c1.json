@@ -87,11 +87,11 @@
 			[
 				{
 					"backtrace" : 6,
-					"path" : "C:/Users/Pocky/CLionProjects/Chikin/../libs/glfw/include"
+					"path" : "C:/Users/Pocky/CLionProjects/OpenGL-Explorer/../libs/glfw/include"
 				},
 				{
 					"backtrace" : 7,
-					"path" : "C:/Users/Pocky/CLionProjects/Chikin/../libs/glew/include"
+					"path" : "C:/Users/Pocky/CLionProjects/OpenGL-Explorer/../libs/glew/include"
 				}
 			],
 			"language" : "CXX",
@@ -125,17 +125,17 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "-LC:\\Users\\Pocky\\CLionProjects\\Chikin\\opengl32",
+				"fragment" : "-LC:\\Users\\Pocky\\CLionProjects\\OpenGL-Explorer\\opengl32",
 				"role" : "libraryPath"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "-LC:\\Users\\Pocky\\CLionProjects\\Chikin\\..\\libs\\glfw\\lib-static-ucrt",
+				"fragment" : "-LC:\\Users\\Pocky\\CLionProjects\\OpenGL-Explorer\\..\\libs\\glfw\\lib-static-ucrt",
 				"role" : "libraryPath"
 			},
 			{
 				"backtrace" : 4,
-				"fragment" : "-LC:\\Users\\Pocky\\CLionProjects\\Chikin\\..\\libs\\glew\\lib\\Release\\x64",
+				"fragment" : "-LC:\\Users\\Pocky\\CLionProjects\\OpenGL-Explorer\\..\\libs\\glew\\lib\\Release\\x64",
 				"role" : "libraryPath"
 			},
 			{
